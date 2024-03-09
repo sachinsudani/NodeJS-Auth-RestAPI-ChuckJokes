@@ -5,7 +5,7 @@
 	"main": "app.ts",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1",
-		"dev": "nodemon src/index.ts",
+		"dev": "nodemon src/app.ts",
 		"tsc": "tsc"
 	},
 	"author": "Sachin Sudani",
@@ -23,6 +23,7 @@
 		"@types/jsonwebtoken": "^9.0.6",
 		"@types/mongoose": "^5.11.97",
 		"@types/node": "^20.11.25",
+		"dotenv": "^16.4.5",
 		"nodemon": "^3.1.0",
 		"ts-node": "^10.9.2",
 		"typescript": "^5.4.2"
