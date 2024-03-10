@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 
 export const authMiddleware = (
@@ -6,17 +6,14 @@ export const authMiddleware = (
 	res: Response,
 	next: NextFunction
 ): void => {
+	const SECRET_KEY = process.env.JWT_SECRET || 'secret-key';
 	const token = req.headers.authorization;
 	if (!token) {
 		res.status(401).json({ message: 'Unauthorized' });
 		return;
 	}
 
-	try {
-		const decoded = jwt.verify(token, process.env.JWT_SECRET || '');
-		req.body.userId = decoded;
-		next();
-	} catch (error) {
-		res.status(401).json({ message: 'Invalid token' });
-	}
+	const decoded = jwt.verify(token, SECRET_KEY);
+	req.body.userId = (decoded as { userId: string }).userId;
+	next();
 };
