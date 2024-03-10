@@ -9,3 +9,7 @@ export const viewProfile = async (
 
 	res.status(200).json(user);
 };
+
+export const logout = async (req: Request, res: Response): Promise<void> => {
+	res.status(200).json({ message: 'Logged out successfully' });
+};
