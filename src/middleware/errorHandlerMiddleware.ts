@@ -1,20 +1,31 @@
-import { Request, Response, NextFunction } from 'express';
+import e, { Request, Response, NextFunction } from 'express';
+import { ZodError } from 'zod';
 
 export const errorHandler = (
-	error: Error,
+	err: Error,
 	req: Request,
 	res: Response,
 	next: NextFunction
-) => {
-	console.error(error.stack);
+): void => {
+	console.error(err.stack);
 
-	if (error.name === 'ValidationError') {
-		return res
-			.status(400)
-			.json({ message: 'Validation error', error: error.message });
+	if (res.headersSent) {
+		return next(err);
 	}
 
-	res.status(500).json({ message: 'Internal Server Error' });
+	let statusCode = 500;
+	let errorMessage = 'Internal server error';
 
-	next();
+	if (err instanceof SyntaxError && 'body' in err) {
+		statusCode = 400;
+		errorMessage = 'Bad request';
+	} else if (err.name === 'JsonWebTokenError') {
+		statusCode = 401;
+		errorMessage = 'Unauthorized';
+	} else if (err.name === 'ValidationError') {
+		statusCode = 400;
+		errorMessage = 'Validation error';
+	}
+
+	res.status(statusCode).json({ error: errorMessage, message: err.message });
 };
