@@ -31,14 +31,14 @@ npm install
 
 ```bash
 PORT=3000
-MONGO_URI=your_mongoDB_URI
-JWT_SECRET=your_secret
+MONGO_URI=mongodb://localhost:27017/user_management
+JWT_SECRET=secret
 ```
 
 4. Run the server
 
 ```bash
-npm start
+npm start # or npm run dev
 ```
 
 5. Import the Postman collection to test the API

@@ -6,9 +6,16 @@ export interface IUser extends Document {
 	email: string;
 }
 
+const ROLE = ['USER', 'ADMIN'];
 const userSchema = new Schema({
 	username: { type: String, required: true, unique: true },
-	password: { type: String, required: true },
+	password: { type: String, required: true, minlength: 6 },
+	role: {
+		type: String,
+		default: ROLE[0],
+		enum: ROLE,
+		required: true,
+	},
 	email: { type: String, unique: true },
 });
 

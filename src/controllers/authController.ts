@@ -10,10 +10,10 @@ dotenv.config();
 const SECRET_KEY = process.env.JWT_SECRET || 'secret-key';
 
 export const signup = async (req: Request, res: Response): Promise<void> => {
-	const { username, password, email } = signupSchema.parse(req.body);
+	const { username, password, email, role } = signupSchema.parse(req.body);
 
 	const hashedPassword = await bcrypt.hash(password, 10);
-	const user = new User({ username, password: hashedPassword, email });
+	const user = new User({ username, password: hashedPassword, email, role });
 	await user.save();
 
 	res.status(201).json({ message: 'User Registered Successfully!' });
