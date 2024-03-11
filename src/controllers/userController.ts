@@ -11,5 +11,6 @@ export const viewProfile = async (
 };
 
 export const logout = async (req: Request, res: Response): Promise<void> => {
+	res.clearCookie('token');
 	res.status(200).json({ message: 'Logged out successfully' });
 };
