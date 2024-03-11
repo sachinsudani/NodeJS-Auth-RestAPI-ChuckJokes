@@ -7,6 +7,11 @@ export const viewProfile = async (
 ): Promise<void> => {
 	const user = await User.findById(req.body.userId).select('-password');
 
+	if (!user) {
+		res.status(404).json({ message: 'User not found' });
+		return;
+	}
+
 	res.status(200).json(user);
 };
 
