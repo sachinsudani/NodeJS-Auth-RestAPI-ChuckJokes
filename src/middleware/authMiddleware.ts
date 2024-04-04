@@ -14,6 +14,6 @@ export const authMiddleware = (
 	}
 
 	const decoded = jwt.verify(token, SECRET_KEY);
-	req.body.userId = (decoded as { userId: string }).userId;
+	req.params.userId = (decoded as { userId: string }).userId;
 	next();
 };

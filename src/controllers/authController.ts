@@ -9,17 +9,23 @@ dotenv.config();
 
 const SECRET_KEY = process.env.JWT_SECRET || 'secret-key';
 
-export const signup = async (req: Request, res: Response): Promise<void> => {
-	const { username, password, email, role } = signupSchema.parse(req.body);
+export const signup = async (req: Request, res: Response) => {
+	const { username, password, role } = signupSchema.parse(req.body);
 
-	const hashedPassword = await bcrypt.hash(password, 10);
-	const user = new User({ username, password: hashedPassword, email, role });
+	let user = await User.findOne({ username });
+	if (user) {
+		return res.status(400).json({ message: 'User already exists' });
+	}
+
+	user = new User({ username, password, role });
+	const salt = await bcrypt.genSalt(10);
+	user.password = await bcrypt.hash(password, salt);
 	await user.save();
 
-	res.status(201).json({ message: 'User Registered Successfully!' });
+	res.json({ message: 'User registered successfully' });
 };
 
-export const login = async (req: Request, res: Response): Promise<void> => {
+export const login = async (req: Request, res: Response) => {
 	const { username, password } = loginSchema.parse(req.body);
 
 	const user = await User.findOne({ username });
@@ -33,9 +39,11 @@ export const login = async (req: Request, res: Response): Promise<void> => {
 		res.status(401).json({ message: 'Invalid credential!' });
 	}
 
-	const token = jwt.sign({ userId: user._id }, SECRET_KEY, {
-		expiresIn: '1d',
-	});
+	const payload = {
+		userId: user._id,
+	};
+
+	const token = jwt.sign(payload, SECRET_KEY, { expiresIn: '1d' });
 
 	res.cookie('token', token, {
 		httpOnly: true,
